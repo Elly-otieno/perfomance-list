@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grades</title>
+    <style>
+        .buttons{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .clrBtn,
+        .addBtn{
+            border: none;
+            width: auto;
+            height: 30px;
+            border-radius: 4px;
+        }
+        .addBtn{
+            background-color: green;
+            margin-right: 10px;
+            width: 50px;
+        }
+        .clrBtn{
+            background-color: red;
+            margin-right: 10px;
+        }
+
+
+    </style>
+</head>
+<body>
+    <h1>Perfomance List</h1>
+    <table width="100%" border="1" class="myTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Exam 1</th>
+                <th>Exam 2</th>
+                <th>Average</th>
+                <th class="grade">Grade</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            
+        </tbody>
+        
+    </table>
+    <div class="buttons">
+        <button class="addBtn">ADD</button>
+        <button class="clrBtn">CLEAR</button>
+    </div>
+    
+
+    <script>
+
+        const table = document.querySelector(`.myTable`);
+        const addBtn = document.querySelector(`.addBtn`); 
+        const clrBtn = document.querySelector(`.clrBtn`); 
+        const clrAll = document.querySelector(`.clrAll`); 
+
+        let isFirstRowGenerated = false;
+
+        function generateRow() {
+            const newRow = table.insertRow();
+            const cell1 = newRow.insertCell(0);
+            const cell2 = newRow.insertCell(1);
+            const cell3 = newRow.insertCell(2);
+            const cell4 = newRow.insertCell(3);
+            const cell5 = newRow.insertCell(4);
+
+            // Add content to the cells
+            cell1.innerHTML = '<input type="text">';
+            cell2.innerHTML = '<input type="text">';
+            cell3.innerHTML = '<input type="text">';
+            cell4.innerHTML = '<input type="text">';
+            cell5.innerHTML = '<input type="text">';
+
+            // update average
+            cell2.querySelector('input').addEventListener('input', () => {
+                updateAverage(newRow);
+            });
+
+            cell3.querySelector('input').addEventListener('input', () => {
+                updateAverage(newRow);
+            });
+
+
+        }
+        function calculateAverage(row) {
+            const marks1 = parseFloat(row.cells[1].querySelector('input').value) || 0;
+            const marks2 = parseFloat(row.cells[2].querySelector('input').value) || 0;
+            return (marks1 + marks2) / 2;
+
+            
+      }
+      
+        function updateAverage(row) {
+            const average = calculateAverage(row);
+            row.cells[3].querySelector('input').value = average.toFixed(0);
+
+            let grade;
+
+          // Switch statement to determine the grade based on the average
+            switch (true) {
+                case average > 100:
+                grade = 'INVALID';
+                break;
+                case average >= 70:
+                grade = 'A';
+                break;
+                case average >= 60:
+                grade = 'B';
+                break;
+                case average >= 50:
+                grade = 'C';
+                break;
+                case average >= 40:
+                grade = 'D';
+                break;
+                default:
+                grade = 'E';
+            }
+
+            row.cells[4].querySelector(`input`).value = grade;
+        }
+        
+
+        document.addEventListener('DOMContentLoaded', function () {
+            addBtn.addEventListener(`click`, ()=>{
+
+                if (!isFirstRowGenerated) {
+                    generateRow();
+                    isFirstRowGenerated = true;
+                    return;
+                }
+
+                const lastRow = table.rows[table.rows.length - 1];
+
+                if (lastRow && lastRow.cells[0].querySelector('input') && lastRow.cells[0].querySelector('input').value.trim() !== '') {
+                    generateRow();
+                } else {
+                    alert("Please Insert student name on the available space.");
+                }
+                
+            })
+        })
+
+            clrBtn.addEventListener(`click`, ()=>{
+                if (table.rows.length > 1) {
+                // Remove the last row
+                table.deleteRow(table.rows.length - 1);
+                } else {    
+                alert('Table is empty. No rows to remove.');
+                }
+            })
+            
+        
+    </script>
+</body>
+</html>
